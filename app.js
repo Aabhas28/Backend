@@ -28,11 +28,20 @@ app.use((error,req,res,next) => {
     res.json({message: error.message || 'An unknown error occurred!'})
 })
 
+const connectUrl = 'mongodb+srv://Please:Please@cluster0.0gakn8r.mongodb.net/places?retryWrites=true&w=majority';
+ 
+const connectConfig = { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+//   useCreateIndex: true 
+}
+
 mongoose
-.connect('mongodb+srv://Aabhas28:Aabhas @cluster0.0gakn8r.mongodb.net/places?retryWrites=true&w=majority')
+.connect(connectUrl,connectConfig)
 .then(() => {
+    console.log('+++ Database connected! +++');
     app.listen(5000);
 })
 .catch(err => {
-    // console.log(err);
+    console.log(err);
 }); 
