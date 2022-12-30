@@ -11,7 +11,7 @@ mongoose.set('strictQuery', true);
 const app = express();
 
 app.use(bodyParser.json())
-
+  
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers',  'Origin, X-Requested-with, Content-Type, Accept, Authorization'
@@ -30,6 +30,12 @@ app.use((req,res,next) => {
 })
 
 app.use((error,req,res,next) => {
+       console.log('ERROR RESPONSE:', error.message);
+    // if (req.file) {
+    //     fs.unlink(req.file.path, err => {
+    //         console.log(err);
+    //     });
+    // }  
     if(req.headerSent){
         return next(error);
     }
