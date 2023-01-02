@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
@@ -9,7 +10,7 @@ const place = require('../models/place');
 const User = require('../models/user');
 
 
-
+  
 const getPlaceById = async (req, res, next) => {
     const placeId = req.params.pid;
 
@@ -76,9 +77,9 @@ const getPlaceById = async (req, res, next) => {
 const createdPlace = new Place({
   title,
   description,
-  address,
+  address,  
   location: coordinates,
-  image: 'https://imgs.search.brave.com/03mA25Na23cC3586ZfDSqeq8mvARiXYfrAZOhOP5SCU/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly9jZG4u/aGlzdG9yeS5jb20v/c2l0ZXMvMi8yMDE2/LzA0L0dldHR5SW1h/Z2VzLTU1NTE3MzYw/Ny5qcGc',
+  image: req.file.path,
   creator
 });
 
@@ -100,7 +101,7 @@ if(!user) {
   const error = new HttpError('Could not find user for provided id', 404);
   return next(error);
 }
-
+  
 try {
  const sess = await mongoose.startSession();
  sess.startTransaction();
@@ -173,6 +174,8 @@ try {
       return next(error);
     }
 
+    const imagePath = place.image;   
+
     try {
       const sess = await mongoose.startSession();
       sess.startTransaction();
@@ -187,7 +190,11 @@ try {
       );
       return next(error);
     }
-  
+
+    fs.unlink(imagePath,err => {
+      console.log(err);
+    })
+    
     res.status(200).json({ message: 'Deleted place.' });
   };
 
